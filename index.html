@@ -5,9 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Instagram Connections Analyzer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    try {
+      const savedTheme = localStorage.getItem('instagram_theme');
+      document.documentElement.dataset.theme = savedTheme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } catch {
+      document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+  </script>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -48,13 +53,6 @@
       </div>
 
       <div class="header-right">
-        <div class="meta-badge" id="source-badge">
-          <span class="status-dot idle" id="status-dot"></span>
-          <span id="load-status">No data loaded</span>
-          <span class="meta-sep">•</span>
-          <span id="gen-date">Ready</span>
-        </div>
-
         <label class="btn-action" title="Select extracted Instagram export folder">
           <input id="folder-input" type="file" webkitdirectory directory multiple accept=".json,application/json">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
@@ -75,6 +73,16 @@
         <button class="btn-action" onclick="resetAllData()" title="Clear current analysis">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
           <span>Reset</span>
+        </button>
+
+        <button class="btn-action theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme">
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M20.2 15.4A8.7 8.7 0 0 1 8.6 3.8 8.8 8.8 0 1 0 20.2 15.4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <span id="theme-action-label">Light mode</span>
+        </button>
+        <button class="btn-action mobile-nav-toggle" id="mobile-nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Open category menu">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <span>Browse</span>
         </button>
       </div>
     </header>
@@ -139,8 +147,15 @@
 
     <!-- Main Content -->
     <div class="content-layout">
+      <button class="sidebar-scrim" id="sidebar-scrim" type="button" aria-label="Close category menu" tabindex="-1" hidden></button>
       <!-- Sidebar -->
-      <aside class="sidebar" aria-label="Categories">
+      <aside class="sidebar" id="sidebar" aria-label="Categories">
+        <div class="sidebar-mobile-heading">
+          <span>Browse accounts</span>
+          <button class="sidebar-close" id="sidebar-close" type="button" aria-label="Close category menu">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12"/></svg>
+          </button>
+        </div>
         <div class="section-title">Analysis</div>
 
         <button class="nav-btn active" data-tab="notFollowingBack" onclick="switchTab('notFollowingBack')">
@@ -191,7 +206,8 @@
           <span class="badge" id="badge-whitelist">0</span>
         </button>
 
-        <div class="section-title" id="title-optional">Other Lists</div>
+        <details class="sidebar-more" id="sidebar-more">
+          <summary class="section-title" id="title-optional">Other lists <span class="more-count" id="more-lists-count">0</span></summary>
 
         <button class="nav-btn" data-tab="closeFriends" onclick="switchTab('closeFriends')">
           <div class="nav-btn-left">
@@ -249,6 +265,7 @@
           <span class="badge" id="badge-removedSuggestions">0</span>
         </button>
 
+        </details>
         <div class="sidebar-ratio-card" id="sidebar-ratio-card">
           <div class="ratio-label-row">
             <span>Mutual Follow Ratio</span>
