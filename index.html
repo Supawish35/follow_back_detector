@@ -289,6 +289,11 @@
               <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
               <span>Reset Stars</span>
             </button>
+            <button class="btn" type="button" onclick="document.getElementById('whitelist-input').click()" title="Import usernames from a text, CSV, or JSON file">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M19 13v6H5v-6H3v6c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-6h-2zM13 5.83l2.59 2.58L17 7l-5-5-5 5 1.41 1.41L11 5.83V16h2V5.83z"/></svg>
+              <span>Import whitelist</span>
+            </button>
+            <input id="whitelist-input" type="file" accept=".txt,.csv,.json,text/plain,text/csv,application/json" hidden aria-label="Choose a whitelist file">
             <button class="btn" onclick="exportCurrentListToCSV()" title="Export current list to CSV">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
               <span>Export CSV</span>

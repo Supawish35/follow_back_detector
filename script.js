@@ -857,6 +857,76 @@ if (jsonInput) {
   });
 }
 
+function normalizeImportedUsername(value) {
+  if (typeof value !== 'string') return null;
+  let candidate = value.trim().replace(/^['"`]+|['"`,;]+$/g, '').trim();
+  if (!candidate) return null;
+  if (/^https?:\/\//i.test(candidate)) {
+    try { candidate = new URL(candidate).pathname.split('/').filter(Boolean).pop() || ''; } catch { return null; }
+  }
+  candidate = candidate.replace(/^@/, '');
+  return /^[a-zA-Z0-9._]{1,30}$/.test(candidate) ? candidate : null;
+}
+
+function parseWhitelistImport(contents, filename) {
+  const usernames = new Set();
+  const add = value => {
+    const username = normalizeImportedUsername(value);
+    if (username) usernames.add(username);
+  };
+  const collect = value => {
+    if (typeof value === 'string') { add(value); return; }
+    if (Array.isArray(value)) { value.forEach(collect); return; }
+    if (!value || typeof value !== 'object') return;
+    ['username', 'user_name', 'title', 'value'].forEach(key => add(value[key]));
+    ['href', 'url', 'profile_url'].forEach(key => add(value[key]));
+    Object.entries(value).forEach(([key, child]) => {
+      if (child && typeof child === 'object') collect(child);
+      else if (typeof child === 'string' && /whitelist|usernames|accounts/i.test(key)) add(child);
+    });
+  };
+
+  if (/\.json$/i.test(filename)) {
+    try { collect(JSON.parse(contents)); } catch { /* treat malformed JSON as a text list */ }
+  }
+  if (!usernames.size) {
+    contents.split(/\r?\n/).forEach(line => {
+      const firstCell = line.trim().replace(/^\uFEFF/, '').split(/[\t,;]/, 1)[0].trim();
+      add(firstCell.replace(/^\d+[.)]\s*/, '').replace(/^[-*]\s*/, ''));
+    });
+  }
+  return [...usernames];
+}
+
+const whitelistInput = document.getElementById('whitelist-input');
+if (whitelistInput) {
+  whitelistInput.addEventListener('change', async event => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      const imported = parseWhitelistImport(await file.text(), file.name);
+      if (!imported.length) {
+        showToast('No usernames found. Use one username per line, CSV, or JSON.');
+        return;
+      }
+      customWhitelist = [...new Set([...customWhitelist, ...imported])];
+      removedFromWhitelist = removedFromWhitelist.filter(username => !imported.includes(username));
+      localStorage.setItem('instagram_custom_whitelist', JSON.stringify(customWhitelist));
+      localStorage.setItem('instagram_removed_whitelist', JSON.stringify(removedFromWhitelist));
+      rebuildActiveWhitelist();
+      computeLists();
+      initSidebar();
+      updateUI();
+      showToast(`Imported ${imported.length} whitelist ${imported.length === 1 ? 'account' : 'accounts'}.`);
+    } catch (error) {
+      console.error('Whitelist import failed:', error);
+      showToast('Could not import this whitelist file.');
+    } finally {
+      event.target.value = '';
+    }
+  });
+}
+
 document.querySelectorAll('.stat-card').forEach(card => {
   card.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') {
