@@ -7,188 +7,303 @@
   <title>Instagram Connections Analyzer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+  <!-- Full-Screen Drag & Drop Overlay -->
   <div class="drop-overlay" id="drop-overlay">
-    <svg viewBox="0 0 24 24">
+    <svg viewBox="0 0 24 24" fill="url(#ig-grad)">
+      <defs>
+        <linearGradient id="ig-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#833ab4" />
+          <stop offset="50%" stop-color="#fd1d1d" />
+          <stop offset="100%" stop-color="#fcb045" />
+        </linearGradient>
+      </defs>
       <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
     </svg>
     <h3>Drop Instagram Export Folder or Files</h3>
-    <p>Release anywhere to automatically load and analyze</p>
+    <p>Release anywhere on this window to parse your followers and following lists locally in your browser.</p>
   </div>
 
   <div class="container">
+    <!-- Header -->
     <header>
       <div class="title-area">
         <h1>
-          <svg viewBox="0 0 24 24" width="32" height="32" style="fill: url(#ig-grad); vertical-align: middle;">
-            <defs>
-              <linearGradient id="ig-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#833ab4" />
-                <stop offset="50%" stop-color="#fd1d1d" />
-                <stop offset="100%" stop-color="#fcb045" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+          <svg viewBox="0 0 24 24" width="34" height="34" style="fill: url(#ig-grad); vertical-align: middle;">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
           </svg>
           Instagram Connections
         </h1>
-        <p>Analyze your followers, following lists, and social connections dynamically</p>
+        <p>
+          Analyze your followers, following lists, and social connections dynamically
+          <span class="privacy-pill">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            100% Client-Side Privacy
+          </span>
+        </p>
       </div>
 
       <div class="header-right">
+        <!-- Live Status Pill -->
         <div class="meta-badge" id="source-badge">
-          <span class="status-dot" id="status-dot"></span>
-          <span id="load-status">Import an Instagram export folder or JSON files</span>
+          <span class="status-dot idle" id="status-dot"></span>
+          <span id="load-status">Waiting for Instagram export...</span>
           <span class="meta-sep">•</span>
           <span id="gen-date">Ready</span>
         </div>
 
-        <label class="btn-action" title="Select Instagram export folder">
+        <!-- Import Folder -->
+        <label class="btn-action" title="Select your extracted Instagram export folder">
           <input id="folder-input" type="file" webkitdirectory directory multiple accept=".json,application/json">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
           <span>Choose Folder</span>
         </label>
 
-        <label class="btn-action" title="Select JSON files directly">
+        <!-- Import JSON -->
+        <label class="btn-action" title="Select specific Instagram JSON files">
           <input id="json-input" type="file" multiple accept=".json,application/json">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
           <span>Choose JSON</span>
         </label>
 
-        <button class="btn-action" onclick="resetToBundledData()" title="Reset to bundled project data">
+        <!-- Demo Data Preview -->
+        <button class="btn-action btn-demo" onclick="loadDemoData()" title="Preview sample demo data immediately">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <span>Demo Data</span>
+        </button>
+
+        <!-- Reset Button -->
+        <button class="btn-action" onclick="resetAllData()" title="Clear current analysis">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
           <span>Reset</span>
         </button>
       </div>
     </header>
 
-    <!-- KPI Grid -->
-    <div class="dashboard-grid">
-      <div class="stat-card not-back active" data-tab="notFollowingBack" onclick="switchTab('notFollowingBack')">
-        <div class="label">Not Following Back</div>
+    <!-- Bento KPI Metric Cards -->
+    <div class="dashboard-grid" role="tablist">
+      <div class="stat-card not-back active" data-tab="notFollowingBack" onclick="switchTab('notFollowingBack')" role="tab" tabindex="0">
+        <div class="stat-card-header">
+          <span class="label">Not Following Back</span>
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M14 8c0-2.21-1.79-4-4-4S6 5.79 6 8s1.79 4 4 4 4-1.79 4-4zm3 2v-2h-2V6h2V4h2v2h2v2h-2v2h-2zM2 18v2h16v-2c0-2.66-5.33-4-8-4s-8 1.34-8 4z"/></svg>
+          </div>
+        </div>
         <div class="value" id="val-not-back">0</div>
+        <div class="stat-hint" id="hint-not-back">Accounts you follow who don't follow back</div>
       </div>
-      <div class="stat-card mutual" data-tab="mutualFollows" onclick="switchTab('mutualFollows')">
-        <div class="label">Mutual Follows</div>
+
+      <div class="stat-card mutual" data-tab="mutualFollows" onclick="switchTab('mutualFollows')" role="tab" tabindex="0">
+        <div class="stat-card-header">
+          <span class="label">Mutual Follows</span>
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+        </div>
         <div class="value" id="val-mutual">0</div>
+        <div class="stat-hint" id="hint-mutual">You follow each other</div>
       </div>
-      <div class="stat-card fans" data-tab="fans" onclick="switchTab('fans')">
-        <div class="label">Fans</div>
+
+      <div class="stat-card fans" data-tab="fans" onclick="switchTab('fans')" role="tab" tabindex="0">
+        <div class="stat-card-header">
+          <span class="label">Fans</span>
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </div>
+        </div>
         <div class="value" id="val-fans">0</div>
+        <div class="stat-hint" id="hint-fans">Follow you, but you don't follow back</div>
       </div>
-      <div class="stat-card following" data-tab="following" onclick="switchTab('following')">
-        <div class="label">Total Following</div>
+
+      <div class="stat-card following" data-tab="following" onclick="switchTab('following')" role="tab" tabindex="0">
+        <div class="stat-card-header">
+          <span class="label">Total Following</span>
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+        </div>
         <div class="value" id="val-following">0</div>
+        <div class="stat-hint">Total accounts you follow</div>
       </div>
-      <div class="stat-card followers" data-tab="followers" onclick="switchTab('followers')">
-        <div class="label">Total Followers</div>
+
+      <div class="stat-card followers" data-tab="followers" onclick="switchTab('followers')" role="tab" tabindex="0">
+        <div class="stat-card-header">
+          <span class="label">Total Followers</span>
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V18h14v-1.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+        </div>
         <div class="value" id="val-followers">0</div>
+        <div class="stat-hint">Total accounts following you</div>
       </div>
     </div>
 
+    <!-- Main Content Layout -->
     <div class="content-layout">
       <!-- Sidebar Navigation -->
-      <div class="sidebar">
+      <aside class="sidebar" aria-label="Analysis Categories">
         <div class="section-title">Core Analysis</div>
+
         <button class="nav-btn active" data-tab="notFollowingBack" onclick="switchTab('notFollowingBack')">
-          <span>Not Following Back</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8c0-2.21-1.79-4-4-4S6 5.79 6 8s1.79 4 4 4 4-1.79 4-4zm3 2v-2h-2V6h2V4h2v2h2v2h-2v2h-2zM2 18v2h16v-2c0-2.66-5.33-4-8-4s-8 1.34-8 4z"/></svg>
+            <span>Not Following Back</span>
+          </div>
           <span class="badge" id="badge-notFollowingBack">0</span>
         </button>
+
         <button class="nav-btn" data-tab="mutualFollows" onclick="switchTab('mutualFollows')">
-          <span>Mutual Follows</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span>Mutual Follows</span>
+          </div>
           <span class="badge" id="badge-mutualFollows">0</span>
         </button>
+
         <button class="nav-btn" data-tab="fans" onclick="switchTab('fans')">
-          <span>Fans</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <span>Fans</span>
+          </div>
           <span class="badge" id="badge-fans">0</span>
         </button>
+
         <button class="nav-btn" data-tab="following" onclick="switchTab('following')">
-          <span>All Following</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <span>All Following</span>
+          </div>
           <span class="badge" id="badge-following">0</span>
         </button>
+
         <button class="nav-btn" data-tab="followers" onclick="switchTab('followers')">
-          <span>All Followers</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V18h14v-1.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span>All Followers</span>
+          </div>
           <span class="badge" id="badge-followers">0</span>
         </button>
+
         <button class="nav-btn" data-tab="whitelist" onclick="switchTab('whitelist')">
-          <span>Whitelisted / Exceptions</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2L9.19 8.63L2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <span>Whitelisted / Stars</span>
+          </div>
           <span class="badge" id="badge-whitelist">0</span>
         </button>
 
-        <div class="section-title" id="title-optional">Optional Lists</div>
+        <div class="section-title" id="title-optional">Special Lists</div>
+
         <button class="nav-btn" data-tab="closeFriends" onclick="switchTab('closeFriends')">
-          <span>Close Friends</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+            <span>Close Friends</span>
+          </div>
           <span class="badge" id="badge-closeFriends">0</span>
         </button>
+
         <button class="nav-btn" data-tab="pendingRequests" onclick="switchTab('pendingRequests')">
-          <span>Pending Requests (Sent)</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span>Pending Sent Requests</span>
+          </div>
           <span class="badge" id="badge-pendingRequests">0</span>
         </button>
+
         <button class="nav-btn" data-tab="recentRequests" onclick="switchTab('recentRequests')">
-          <span>Recent Follow Requests</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8s-3.58 8-8 8zm.5-13H11v6l5.25 3.15l.75-1.23l-4.5-2.67z"/></svg>
+            <span>Recent Follow Requests</span>
+          </div>
           <span class="badge" id="badge-recentRequests">0</span>
         </button>
+
         <button class="nav-btn" data-tab="recentlyUnfollowed" onclick="switchTab('recentlyUnfollowed')">
-          <span>Recently Unfollowed</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            <span>Recently Unfollowed</span>
+          </div>
           <span class="badge" id="badge-recentlyUnfollowed">0</span>
         </button>
+
         <button class="nav-btn" data-tab="hideStory" onclick="switchTab('hideStory')">
-          <span>Hidden Story</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27z"/></svg>
+            <span>Hidden Story</span>
+          </div>
           <span class="badge" id="badge-hideStory">0</span>
         </button>
+
         <button class="nav-btn" data-tab="blocked" onclick="switchTab('blocked')">
-          <span>Blocked Profiles</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg>
+            <span>Blocked Profiles</span>
+          </div>
           <span class="badge" id="badge-blocked">0</span>
         </button>
+
         <button class="nav-btn" data-tab="removedSuggestions" onclick="switchTab('removedSuggestions')">
-          <span>Removed Suggestions</span>
+          <div class="nav-btn-left">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            <span>Removed Suggestions</span>
+          </div>
           <span class="badge" id="badge-removedSuggestions">0</span>
         </button>
-      </div>
+
+        <!-- Reciprocity Health Progress -->
+        <div class="sidebar-ratio-card" id="sidebar-ratio-card">
+          <div class="ratio-label-row">
+            <span>Follow-Back Health</span>
+            <span class="ratio-val" id="ratio-percent">0%</span>
+          </div>
+          <div class="ratio-bar-track">
+            <div class="ratio-bar-fill" id="ratio-bar-fill"></div>
+          </div>
+        </div>
+      </aside>
 
       <!-- Main Panel -->
-      <div class="main-panel">
+      <main class="main-panel">
         <div class="tab-header">
           <div class="tab-title-area">
             <h2 id="active-tab-title">Not Following Back</h2>
             <p id="active-tab-desc">Accounts you follow, but they don't follow you back.</p>
           </div>
-          <div class="filter-actions">
-            <button class="btn" id="btn-reset-whitelist" onclick="resetCustomWhitelist()" style="display:none;">
-              <svg viewBox="0 0 24 24" width="14" height="14">
-                <path fill="currentColor"
-                  d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
-              </svg>
-              Reset Whitelist
+          <div class="tab-actions">
+            <button class="btn" id="btn-reset-whitelist" onclick="resetCustomWhitelist()" style="display:none;" title="Restore default whitelist">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
+              <span>Reset Stars</span>
+            </button>
+            <button class="btn" onclick="exportCurrentListToCSV()" title="Export current list to CSV file">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              <span>Export CSV</span>
             </button>
             <button class="btn btn-primary" onclick="copyAllUsernames()" title="Copy all usernames in current view">
-              <svg viewBox="0 0 24 24" width="14" height="14">
-                <path fill="currentColor"
-                  d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-              </svg>
-              Copy All Usernames
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              <span>Copy All</span>
             </button>
           </div>
         </div>
 
+        <!-- Filter & Search Toolbar -->
         <div class="toolbar">
           <div class="search-container">
             <svg class="search-icon" viewBox="0 0 24 24">
-              <path
-                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
             </svg>
-            <input type="text" class="search-input" id="search-input" placeholder="Search username or name..."
-              oninput="handleSearch(this.value)">
+            <input type="text" class="search-input" id="search-input" placeholder="Search by @username or real name..." oninput="handleSearch(this.value)">
+            <button class="search-clear-btn" id="search-clear-btn" onclick="clearSearch()" title="Clear search">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
           </div>
 
           <div class="filter-actions">
+            <span class="results-counter" id="results-counter">Showing 0 accounts</span>
             <select class="sort-select" id="sort-select" onchange="handleSort(this.value)">
               <option value="username-asc">Username (A - Z)</option>
               <option value="username-desc">Username (Z - A)</option>
@@ -198,16 +313,17 @@
           </div>
         </div>
 
+        <!-- Profiles Container / Dynamic Grid -->
         <div class="profiles-grid" id="profiles-container">
           <!-- Rendered dynamically -->
         </div>
-      </div>
+      </main>
     </div>
   </div>
 
-  <!-- Toast element -->
-  <div class="toast" id="toast">
-    <svg viewBox="0 0 24 24" width="16" height="16" style="fill: var(--success);">
+  <!-- Toast Element -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" width="18" height="18" style="fill: var(--accent-green);">
       <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
     </svg>
     <span class="toast-text">Action successful!</span>
