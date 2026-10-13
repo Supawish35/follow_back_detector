@@ -1,9 +1,8 @@
 /**
- * Instagram Connections Analyzer - Engine
- * Privacy: 100% Client-Side. No telemetry, no external requests.
+ * Instagram Connections Analyzer
+ * Client-side only. No external requests.
  */
 
-// Initial empty state (privacy-safe for deployment)
 const DEFAULT_DATA = {
   following: [],
   followers: [],
@@ -18,7 +17,7 @@ const DEFAULT_DATA = {
   generatedAt: ''
 };
 
-// Demo Dataset for instant live preview without needing files
+// Sample dataset for quick evaluation
 const DEMO_DATA = {
   following: [
     { username: 'mk.design', name: 'Maya Korn', href: 'https://www.instagram.com/mk.design/', timestamp: 1787306916, date_str: '2026-08-20 14:15' },
@@ -54,12 +53,11 @@ const DEMO_DATA = {
   hideStory: [],
   blocked: [],
   removedSuggestions: [],
-  generatedAt: 'Demo Preview'
+  generatedAt: 'Sample'
 };
 
 let data = JSON.parse(JSON.stringify(DEFAULT_DATA));
 
-// Whitelist and persistence
 let customWhitelist = JSON.parse(localStorage.getItem('instagram_custom_whitelist') || '[]');
 let removedFromWhitelist = JSON.parse(localStorage.getItem('instagram_removed_whitelist') || '[]');
 let activeWhitelist = new Set();
@@ -67,7 +65,6 @@ let activeWhitelist = new Set();
 let followersSet = new Set();
 let followingSet = new Set();
 
-// Dynamic categorised lists
 let lists = {
   following: [],
   followers: [],
@@ -84,12 +81,10 @@ let lists = {
   whitelist: []
 };
 
-// UI State
 let activeTab = 'notFollowingBack';
 let searchQuery = '';
 let sortBy = 'username-asc';
 
-// Status Pill Controller
 function setStatus(statusText, dateText, isSuccess = true) {
   const statusEl = document.getElementById('load-status');
   if (statusEl) statusEl.textContent = statusText;
@@ -103,7 +98,6 @@ function setStatus(statusText, dateText, isSuccess = true) {
   }
 }
 
-// Rebuild Whitelist Set
 function rebuildActiveWhitelist() {
   customWhitelist = JSON.parse(localStorage.getItem('instagram_custom_whitelist') || '[]');
   removedFromWhitelist = JSON.parse(localStorage.getItem('instagram_removed_whitelist') || '[]');
@@ -113,22 +107,18 @@ function rebuildActiveWhitelist() {
   activeWhitelist = new Set([...base, ...customWhitelist]);
 }
 
-// Compute Relations
 function computeLists() {
   followersSet = new Set((data.followers || []).map(u => u.username));
   followingSet = new Set((data.following || []).map(u => u.username));
 
-  // Not Following Back
   lists.notFollowingBack = (data.following || []).filter(
     u => !followersSet.has(u.username) && !activeWhitelist.has(u.username)
   );
 
-  // Mutuals
   lists.mutualFollows = (data.following || []).filter(
     u => followersSet.has(u.username)
   );
 
-  // Fans
   lists.fans = (data.followers || []).filter(
     u => !followingSet.has(u.username)
   );
@@ -143,7 +133,6 @@ function computeLists() {
   lists.blocked = data.blocked || [];
   lists.removedSuggestions = data.removedSuggestions || [];
 
-  // Whitelisted accounts list representation
   const allWhitelistNames = Array.from(activeWhitelist);
   lists.whitelist = allWhitelistNames.map(name => {
     const found = lists.following.find(u => u.username === name) || lists.followers.find(u => u.username === name);
@@ -157,7 +146,6 @@ function computeLists() {
   });
 }
 
-// Whitelist Toggle
 function toggleWhitelist(username) {
   const baseExceptions = data.exceptNames || [];
   if (activeWhitelist.has(username)) {
@@ -185,43 +173,40 @@ function toggleWhitelist(username) {
   rebuildActiveWhitelist();
   computeLists();
   updateUI();
-  showToast(activeWhitelist.has(username) ? `Starred & whitelisted @${username}` : `Unstarred @${username}`);
+  showToast(activeWhitelist.has(username) ? `Starred @${username}` : `Unstarred @${username}`);
 }
 
 function resetCustomWhitelist() {
-  if (confirm('Reset all custom stars and exclusions back to default?')) {
+  if (confirm('Reset custom stars back to default?')) {
     localStorage.removeItem('instagram_custom_whitelist');
     localStorage.removeItem('instagram_removed_whitelist');
     rebuildActiveWhitelist();
     computeLists();
     updateUI();
-    showToast('Whitelist reset to default!');
+    showToast('Whitelist reset to default');
   }
 }
 
-// Demo Data Loader
 function loadDemoData() {
   data = JSON.parse(JSON.stringify(DEMO_DATA));
   rebuildActiveWhitelist();
   computeLists();
   initSidebar();
   updateUI();
-  setStatus('Loaded Sample Demo Data (10 following, 5 followers)', 'Demo Active', true);
-  showToast('Loaded demo preview! Try searching, sorting, or starring accounts.');
+  setStatus('Loaded sample data (10 following, 5 followers)', 'Sample', true);
+  showToast('Loaded sample data');
 }
 
-// Reset Analysis
 function resetAllData() {
   data = JSON.parse(JSON.stringify(DEFAULT_DATA));
   rebuildActiveWhitelist();
   computeLists();
   initSidebar();
   updateUI();
-  setStatus('Waiting for Instagram export...', 'Ready', false);
-  showToast('Cleared all data. Ready for import.');
+  setStatus('No data loaded', 'Ready', false);
+  showToast('Cleared data');
 }
 
-// Tab Switching
 function switchTab(tabId) {
   activeTab = tabId;
 
@@ -237,7 +222,6 @@ function switchTab(tabId) {
   updateUI();
 }
 
-// Search and Filters
 function handleSearch(query) {
   searchQuery = query;
   const clearBtn = document.getElementById('search-clear-btn');
@@ -261,7 +245,6 @@ function handleSort(sortVal) {
   renderList();
 }
 
-// Update UI Numbers & Badges
 function updateUI() {
   const setVal = (id, val) => {
     const el = document.getElementById(id);
@@ -274,7 +257,6 @@ function updateUI() {
   setVal('val-mutual', (lists.mutualFollows || []).length);
   setVal('val-fans', (lists.fans || []).length);
 
-  // Update nav badges
   document.querySelectorAll('.nav-btn').forEach(btn => {
     const tabId = btn.getAttribute('data-tab');
     if (lists[tabId]) {
@@ -283,7 +265,6 @@ function updateUI() {
     }
   });
 
-  // Calculate follow-back reciprocity health percentage
   const totalFollowing = (data.following || []).length;
   const mutualCount = (lists.mutualFollows || []).length;
   let ratioPct = 0;
@@ -297,38 +278,35 @@ function updateUI() {
   const ratioBarFillEl = document.getElementById('ratio-bar-fill');
   if (ratioBarFillEl) ratioBarFillEl.style.width = `${ratioPct}%`;
 
-  // Hints
   const hintNotBack = document.getElementById('hint-not-back');
   if (hintNotBack) {
     const ignored = (data.following || []).length - mutualCount - (lists.notFollowingBack || []).length;
-    hintNotBack.innerText = ignored > 0 ? `Excluding ${ignored} whitelisted accounts` : "Accounts that don't follow back";
+    hintNotBack.innerText = ignored > 0 ? `Excluding ${ignored} starred accounts` : 'Accounts that do not follow back';
   }
 
-  // Titles
   const tabTitles = {
-    notFollowingBack: { title: "Not Following Back", desc: "Accounts you follow, but they don't follow you back (excluding stars/whitelisted)." },
-    mutualFollows: { title: "Mutual Follows", desc: "Accounts you follow, and they follow you back." },
-    fans: { title: "Fans", desc: "Accounts that follow you, but you don't follow them back." },
-    following: { title: "All Following", desc: "Every account you follow on Instagram." },
-    followers: { title: "All Followers", desc: "Every account that follows you on Instagram." },
-    closeFriends: { title: "Close Friends", desc: "Accounts on your Instagram Close Friends list." },
-    pendingRequests: { title: "Pending Requests (Sent)", desc: "Accounts you requested to follow, but they haven't approved yet." },
-    recentRequests: { title: "Recent Follow Requests", desc: "Recent follow requests from your account." },
-    recentlyUnfollowed: { title: "Recently Unfollowed", desc: "Accounts you unfollowed recently." },
-    hideStory: { title: "Hidden Story", desc: "Accounts blocked from viewing your stories." },
-    blocked: { title: "Blocked Profiles", desc: "Accounts you have blocked." },
-    removedSuggestions: { title: "Removed Suggestions", desc: "Accounts removed from your Instagram recommendations." },
-    whitelist: { title: "Whitelisted Accounts", desc: "Accounts ignored from the 'Not Following Back' count." }
+    notFollowingBack: { title: 'Not Following Back', desc: 'Accounts you follow that do not follow you back.' },
+    mutualFollows: { title: 'Mutual Follows', desc: 'Accounts where you follow each other.' },
+    fans: { title: 'Fans', desc: 'Accounts that follow you, but you do not follow back.' },
+    following: { title: 'All Following', desc: 'Every account you follow.' },
+    followers: { title: 'All Followers', desc: 'Every account that follows you.' },
+    closeFriends: { title: 'Close Friends', desc: 'Accounts on your Close Friends list.' },
+    pendingRequests: { title: 'Pending Requests (Sent)', desc: 'Follow requests you sent that are still pending.' },
+    recentRequests: { title: 'Recent Follow Requests', desc: 'Recent outgoing follow requests.' },
+    recentlyUnfollowed: { title: 'Recently Unfollowed', desc: 'Accounts you unfollowed recently.' },
+    hideStory: { title: 'Hidden Story', desc: 'Accounts hidden from your stories.' },
+    blocked: { title: 'Blocked Profiles', desc: 'Accounts you have blocked.' },
+    removedSuggestions: { title: 'Removed Suggestions', desc: 'Accounts removed from suggestions.' },
+    whitelist: { title: 'Whitelisted Accounts', desc: 'Starred accounts ignored from the unfollower list.' }
   };
 
-  const headerInfo = tabTitles[activeTab] || { title: "Accounts", desc: "" };
+  const headerInfo = tabTitles[activeTab] || { title: 'Accounts', desc: '' };
   const titleEl = document.getElementById('active-tab-title');
   if (titleEl) titleEl.innerText = headerInfo.title;
 
   const descEl = document.getElementById('active-tab-desc');
   if (descEl) descEl.innerText = headerInfo.desc;
 
-  // Show/hide whitelist reset button
   const resetBtn = document.getElementById('btn-reset-whitelist');
   if (resetBtn) {
     if (activeTab === 'whitelist' && (customWhitelist.length > 0 || removedFromWhitelist.length > 0)) {
@@ -341,7 +319,6 @@ function updateUI() {
   renderList();
 }
 
-// Render Profile List
 function renderList() {
   const container = document.getElementById('profiles-container');
   if (!container) return;
@@ -349,7 +326,6 @@ function renderList() {
 
   let dataset = [...(lists[activeTab] || [])];
 
-  // Search filter
   if (searchQuery.trim() !== '') {
     const q = searchQuery.toLowerCase();
     dataset = dataset.filter(u =>
@@ -358,13 +334,11 @@ function renderList() {
     );
   }
 
-  // Update counter
   const counterEl = document.getElementById('results-counter');
   if (counterEl) {
     counterEl.innerText = `Showing ${dataset.length} accounts`;
   }
 
-  // Sorting
   if (sortBy === 'username-asc') {
     dataset.sort((a, b) => a.username.localeCompare(b.username));
   } else if (sortBy === 'username-desc') {
@@ -375,10 +349,8 @@ function renderList() {
     dataset.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
   }
 
-  // Empty state handling
   if (dataset.length === 0) {
     if ((data.following || []).length === 0 && (data.followers || []).length === 0) {
-      // Interactive Welcome Hero
       container.innerHTML = `
         <div class="hero-dropzone">
           <div class="hero-icon-pulse">
@@ -387,8 +359,8 @@ function renderList() {
             </svg>
           </div>
           <div>
-            <h3>Drop Instagram Export Folder Here</h3>
-            <p>Drag and drop your extracted <code>followers_and_following</code> folder, or click the buttons below to begin analysis.</p>
+            <h3>Drop export folder here</h3>
+            <p>Drop your <code>followers_and_following</code> folder or select files below.</p>
           </div>
 
           <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
@@ -398,11 +370,11 @@ function renderList() {
             </button>
             <button class="btn" onclick="document.getElementById('json-input').click()">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-              <span>Choose JSON Files</span>
+              <span>Choose JSON</span>
             </button>
             <button class="btn btn-action btn-demo" onclick="loadDemoData()">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <span>Try Demo Preview</span>
+              <span>Sample Data</span>
             </button>
           </div>
 
@@ -410,23 +382,22 @@ function renderList() {
             <div class="step-card">
               <div class="step-num">Step 1</div>
               <div class="step-title">Export on Instagram</div>
-              <div class="step-desc">Go to Accounts Center > Export Information. Pick "JSON" format and "Followers and following".</div>
+              <div class="step-desc">In Accounts Center, request your data in JSON format under "Followers and following".</div>
             </div>
             <div class="step-card">
               <div class="step-num">Step 2</div>
-              <div class="step-title">Unzip Folder</div>
-              <div class="step-desc">Extract the Instagram zip file to get your JSON files.</div>
+              <div class="step-title">Unzip archive</div>
+              <div class="step-desc">Extract the downloaded zip file to access the JSON files.</div>
             </div>
             <div class="step-card">
               <div class="step-num">Step 3</div>
-              <div class="step-title">Drop & Analyze</div>
-              <div class="step-desc">Drop the folder here. Everything processes 100% privately in your browser memory.</div>
+              <div class="step-title">Drop folder</div>
+              <div class="step-desc">Drop the folder here. Everything processes locally in memory.</div>
             </div>
           </div>
         </div>
       `;
     } else {
-      // Query empty
       container.innerHTML = `
         <div class="empty-state">
           <svg class="empty-icon" viewBox="0 0 24 24">
@@ -434,7 +405,7 @@ function renderList() {
             <line x1="8" y1="12" x2="16" y2="12"></line>
           </svg>
           <h4 style="font-size: 1.1rem; font-weight: 700;">No accounts found</h4>
-          <p>No results matched "${searchQuery}". Try a different username or clear the search.</p>
+          <p>No results matched "${searchQuery}".</p>
           <button class="btn" onclick="clearSearch()" style="margin-top: 0.5rem;">Clear Search</button>
         </div>
       `;
@@ -501,7 +472,7 @@ function renderList() {
         </div>
       </div>
       <div class="card-actions">
-        <button class="action-btn star-btn ${isWhitelisted ? 'whitelisted' : ''}" onclick="toggleWhitelist('${user.username}')" title="${isWhitelisted ? 'Remove Star' : 'Star & ignore in Not Following Back'}">
+        <button class="action-btn star-btn ${isWhitelisted ? 'whitelisted' : ''}" onclick="toggleWhitelist('${user.username}')" title="${isWhitelisted ? 'Remove Star' : 'Star account'}">
           ${isWhitelisted ?
             `<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2L9.19 8.63L2 9.24l5.46 4.73L5.82 21z"/></svg>` :
             `<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M22 9.24l-7.19-.62L12 2L9.19 8.63L2 9.24l5.46 4.73L5.82 21L12 17.27L18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27l1-4.28l-3.32-2.88l4.38-.38L12 6.1l1.71 4.04l4.38.38l-3.32 2.88l1 4.28L12 15.4z"/></svg>`
@@ -518,9 +489,8 @@ function renderList() {
   container.appendChild(frag);
 }
 
-// Copy utilities
 function copyUsername(text) {
-  const onSuccess = () => showToast(`Copied @${text} to clipboard!`);
+  const onSuccess = () => showToast(`Copied @${text}`);
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(onSuccess).catch(() => fallbackCopy(text, onSuccess));
   } else {
@@ -553,12 +523,12 @@ function copyAllUsernames() {
   }
 
   if (dataset.length === 0) {
-    showToast('No usernames to copy!');
+    showToast('No usernames to copy');
     return;
   }
 
   const text = dataset.map(u => u.username).join('\n');
-  const onSuccess = () => showToast(`Copied all ${dataset.length} usernames!`);
+  const onSuccess = () => showToast(`Copied ${dataset.length} usernames`);
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(onSuccess).catch(() => fallbackCopy(text, onSuccess));
   } else {
@@ -566,7 +536,6 @@ function copyAllUsernames() {
   }
 }
 
-// Export Current List to CSV
 function exportCurrentListToCSV() {
   let dataset = [...(lists[activeTab] || [])];
   if (searchQuery.trim() !== '') {
@@ -578,7 +547,7 @@ function exportCurrentListToCSV() {
   }
 
   if (dataset.length === 0) {
-    showToast('No accounts in current view to export!');
+    showToast('No accounts to export');
     return;
   }
 
@@ -601,10 +570,9 @@ function exportCurrentListToCSV() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast(`Exported ${dataset.length} accounts to CSV!`);
+  showToast(`Exported ${dataset.length} accounts to CSV`);
 }
 
-// Toast System
 let toastTimer = null;
 function showToast(message) {
   const toast = document.getElementById('toast');
@@ -617,7 +585,6 @@ function showToast(message) {
   }, 2600);
 }
 
-// Sidebar Visibility Manager
 function initSidebar() {
   const optionalTabs = ['closeFriends', 'pendingRequests', 'recentRequests', 'recentlyUnfollowed', 'hideStory', 'blocked', 'removedSuggestions'];
   let visibleCount = 0;
@@ -640,7 +607,6 @@ function initSidebar() {
   }
 }
 
-// JSON Parsing Helpers
 function detailedUsers(json) {
   if (!json) return [];
   const items = Array.isArray(json) ? json : (json?.relationships_following || json?.relationships_followers || []);
@@ -706,7 +672,6 @@ function extractCloseFriendsCustomLists(json) {
   return users;
 }
 
-// Multi-Encoding Safe File Reader
 async function readJsonFile(file) {
   const buffer = await file.arrayBuffer();
   const view = new Uint8Array(buffer);
@@ -727,11 +692,10 @@ async function readJsonFile(file) {
   return JSON.parse(text);
 }
 
-// File Loader Engine
 async function loadExportFiles(fileList) {
   const files = [...fileList].filter(f => f.name.toLowerCase().endsWith('.json'));
   if (!files.length) {
-    showToast('No JSON files found in selection!');
+    showToast('No JSON files found in selection');
     return;
   }
 
@@ -801,7 +765,7 @@ async function loadExportFiles(fileList) {
     updateUI();
 
     setStatus(`Loaded ${data.following.length} Following & ${data.followers.length} Followers`, 'Imported', true);
-    showToast(`Successfully analyzed ${data.following.length} following and ${data.followers.length} followers!`);
+    showToast(`Loaded ${data.following.length} following and ${data.followers.length} followers`);
   } catch (error) {
     console.error(error);
     setStatus(`Error: ${error.message}`, 'Failed', false);
@@ -809,7 +773,6 @@ async function loadExportFiles(fileList) {
   }
 }
 
-// Drag and Drop Engine
 async function getFilesFromDataTransfer(dataTransfer) {
   const files = [];
   const items = dataTransfer.items;
@@ -877,7 +840,6 @@ window.addEventListener('drop', async e => {
   }
 });
 
-// File Inputs
 const folderInput = document.getElementById('folder-input');
 if (folderInput) {
   folderInput.addEventListener('change', e => {
@@ -892,7 +854,6 @@ if (jsonInput) {
   });
 }
 
-// Keyboard navigation on KPI cards
 document.querySelectorAll('.stat-card').forEach(card => {
   card.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -903,9 +864,8 @@ document.querySelectorAll('.stat-card').forEach(card => {
   });
 });
 
-// Initialize on Load
 rebuildActiveWhitelist();
 computeLists();
 initSidebar();
 updateUI();
-setStatus('Waiting for Instagram export...', 'Ready', false);
+setStatus('No data loaded', 'Ready', false);
